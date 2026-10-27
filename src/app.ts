@@ -50,7 +50,19 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapi, { customSiteTitle: "P
 // Dashboard (built by Vite into dist/web).
 const webDir = path.join(__dirname, "..", "dist", "web");
 const builtWebDir = fs.existsSync(path.join(__dirname, "web")) ? path.join(__dirname, "web") : webDir;
-app.use(express.static(builtWebDir, { index: "index.html", maxAge: "1h" }));
+// Vite gives assets content-hashed names, so they can be cached for a long time;
+// index.html must always be revalidated so a deploy is picked up immediately.
+app.use(
+  express.static(builtWebDir, {
+    index: "index.html",
+    setHeaders: (res, filePath) => {
+      res.setHeader(
+        "Cache-Control",
+        filePath.includes(`${path.sep}assets${path.sep}`) ? "public, max-age=31536000, immutable" : "no-cache"
+      );
+    },
+  })
+);
 
 app.use((req, res) => {
   res.status(404).json({ error: { code: "not_found", message: `No route for ${req.method} ${req.path}` } });
