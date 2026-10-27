@@ -5,7 +5,9 @@ export async function listAccounts(workspaceId: string) {
   const { rows } = await pool.query<{
     id: string; name: string; type: string; currency: string; balance: bigint; created_at: Date;
   }>(
-    "SELECT id, name, type, currency, balance, created_at FROM accounts WHERE workspace_id = $1 ORDER BY created_at, id",
+    `SELECT id, name, type, currency, balance, created_at FROM accounts
+      WHERE workspace_id = $1
+      ORDER BY CASE type WHEN 'customer' THEN 0 WHEN 'fees' THEN 1 ELSE 2 END, created_at, name`,
     [workspaceId]
   );
   return rows.map(serializeAccount);

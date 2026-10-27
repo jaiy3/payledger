@@ -23,7 +23,7 @@ export async function reconcile(workspaceId: string) {
        LEFT JOIN postings p ON p.account_id = a.id
       WHERE a.workspace_id = $1
       GROUP BY a.id
-      ORDER BY a.created_at, a.id`,
+      ORDER BY CASE a.type WHEN 'customer' THEN 0 WHEN 'fees' THEN 1 ELSE 2 END, a.created_at, a.name`,
     [workspaceId]
   );
 

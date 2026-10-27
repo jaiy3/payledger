@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { call, newKey, type Account, type ApiResult } from "../api";
 import { feeFor, formatKobo, parseNaira, shortId } from "../money";
 
 type Outcome = { label: string; result: ApiResult<{ id?: string; error?: { code: string; message: string } }> };
 
 export function TransferForm({ accounts, onDone }: { accounts: Account[]; onDone: () => Promise<void> }) {
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [fromChoice, setFrom] = useState("");
+  const [toChoice, setTo] = useState("");
   const [amount, setAmount] = useState("2,500");
   const [key, setKey] = useState(newKey);
   const [busy, setBusy] = useState(false);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
 
-  useEffect(() => {
-    if (!from && accounts[0]) setFrom(accounts[0].id);
-    if (!to && accounts[1]) setTo(accounts[1].id);
-  }, [accounts, from, to]);
+  const has = (id: string) => accounts.some((a) => a.id === id);
+  const from = has(fromChoice) ? fromChoice : accounts[0]?.id ?? "";
+  const to = has(toChoice) ? toChoice : accounts.find((a) => a.id !== from)?.id ?? "";
 
   const kobo = parseNaira(amount);
   const fee = kobo ? feeFor(kobo) : 0;

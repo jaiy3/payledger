@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { call, newKey, type Account, type Reconciliation } from "../api";
 import { feeFor, formatKobo, parseNaira } from "../money";
 
@@ -14,14 +14,14 @@ type Run = {
 const COUNT = 20;
 
 export function StressTest({ accounts, onDone }: { accounts: Account[]; onDone: () => Promise<void> }) {
-  const [from, setFrom] = useState("");
+  const [fromChoice, setFrom] = useState("");
   const [amount, setAmount] = useState("1,000");
   const [busy, setBusy] = useState(false);
   const [run, setRun] = useState<Run | null>(null);
 
-  useEffect(() => {
-    if (!from && accounts[1]) setFrom(accounts[1].id);
-  }, [accounts, from]);
+  // Default to the poorer customer, so the demo runs out of money quickly.
+  const poorest = [...accounts].sort((a, b) => a.balance - b.balance)[0];
+  const from = accounts.some((a) => a.id === fromChoice) ? fromChoice : poorest?.id ?? "";
 
   const sender = accounts.find((a) => a.id === from);
   const receiver = accounts.find((a) => a.id !== from);
