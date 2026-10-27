@@ -1,0 +1,48 @@
+{
+  "name": "payledger",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Double-entry payments ledger API with idempotency keys, signed webhooks and a live dashboard.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:api": "tsx watch src/server.ts",
+    "dev:web": "vite --config web/vite.config.mts",
+    "migrate": "tsx src/migrate-cli.ts",
+    "build": "npm run build:api && npm run build:web",
+    "build:api": "tsc -p tsconfig.json",
+    "build:web": "vite build --config web/vite.config.mts",
+    "start": "node dist/migrate-cli.js && node dist/server.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p web/tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "pino": "^9.10.0",
+    "pino-http": "^10.5.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "@types/pg": "^8.15.5",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@vitejs/plugin-react": "^5.0.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5",
+    "vitest": "^3.2.4"
+  }
+}

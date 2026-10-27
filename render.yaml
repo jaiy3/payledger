@@ -1,0 +1,16 @@
+# One free Docker web service: API, dashboard and webhook dispatcher.
+# Use a free Neon Postgres for DATABASE_URL (Render's free Postgres expires after 30 days).
+services:
+  - type: web
+    name: payledger
+    runtime: docker
+    region: frankfurt
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: WEBHOOK_DISPATCHER
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
