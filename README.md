@@ -2,7 +2,7 @@
 
 **A double-entry payments ledger API you can try to break.** Transfers are idempotent, safe under concurrency and enforced by the database itself. Webhooks are signed, retried with backoff and never sent for a payment that didn't commit.
 
-**[Open the live sandbox](https://payledger.onrender.com)** · [API docs](https://payledger.onrender.com/docs)
+**[Open the live sandbox](https://payledger-9e32.onrender.com)** · [API docs](https://payledger-9e32.onrender.com/docs)
 
 > Free hosting: if the first load takes ~30 seconds, the service is waking up.
 
@@ -76,13 +76,13 @@ Balances are maintained incrementally for fast reads. `GET /v1/reconciliation` p
 | GET | `/v1/webhooks/deliveries` | Delivery status and retries |
 | POST | `/v1/webhooks/deliveries/:id/retry` | Replay a failed delivery |
 
-Full OpenAPI spec at [`/docs`](https://payledger.onrender.com/docs).
+Full OpenAPI spec at [`/docs`](https://payledger-9e32.onrender.com/docs).
 
 ```bash
-KEY=$(curl -s -X POST https://payledger.onrender.com/v1/sandbox | jq -r .api_key)
-curl -s https://payledger.onrender.com/v1/accounts -H "Authorization: Bearer $KEY"
+KEY=$(curl -s -X POST https://payledger-9e32.onrender.com/v1/sandbox | jq -r .api_key)
+curl -s https://payledger-9e32.onrender.com/v1/accounts -H "Authorization: Bearer $KEY"
 
-curl -s https://payledger.onrender.com/v1/transfers \
+curl -s https://payledger-9e32.onrender.com/v1/transfers \
   -H "Authorization: Bearer $KEY" -H "Idempotency-Key: $(uuidgen)" -H "Content-Type: application/json" \
   -d '{"from_account_id":"acc_…","to_account_id":"acc_…","amount":250000}'
 ```
