@@ -43,15 +43,18 @@ export async function postEntry(
   const sum = postings.reduce((total, p) => total + p.amount, 0n);
   if (sum !== 0n) throw new Error(`postings must sum to zero, got ${sum}`);
 
-  const accountIds = [...new Set(postings.map((p) => p.accountId))].sort();
-  const { rows } = await client.query<LockedAccount>(
-    `SELECT id, name, type, balance, allow_negative
-       FROM accounts
-      WHERE workspace_id = $1 AND id = ANY($2::text[])
-      ORDER BY id
-      FOR UPDATE`,
-    [workspaceId, accountIds]
-  );
+  const accountIds = [...new Set(postings.map((p) => p.accountId))];
+  const rows: LockedAccount[] = [];
+  for (const accountId of accountIds) {
+    const result = await client.query<LockedAccount>(
+      `SELECT id, name, type, balance, allow_negative
+         FROM accounts
+        WHERE workspace_id = $1 AND id = $2
+        FOR UPDATE`,
+      [workspaceId, accountId]
+    );
+    rows.push(...result.rows);
+  }
   if (rows.length !== accountIds.length) {
     const found = new Set(rows.map((r) => r.id));
     const missing = accountIds.filter((id) => !found.has(id));
