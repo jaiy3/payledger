@@ -17,6 +17,13 @@ app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.use(
   helmet({
+    // Helmet v8 changed the Strict-Transport-Security default max-age from 180
+    // days to 1 year. Set it explicitly so a future default change cannot
+    // silently alter the HSTS policy.
+    strictTransportSecurity: {
+      maxAge: 31_536_000,
+      includeSubDomains: true,
+    },
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
